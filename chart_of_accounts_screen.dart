@@ -1,0 +1,13 @@
+
+import 'package:flutter/material.dart';
+import '../services/db_simple.dart';
+
+class ChartOfAccountsScreen extends StatefulWidget { const ChartOfAccountsScreen({super.key}); @override State<ChartOfAccountsScreen> createState() => _ChartOfAccountsScreenState(); }
+class _ChartOfAccountsScreenState extends State<ChartOfAccountsScreen> {
+  List<Map<String,dynamic>> accounts=[]; final code=TextEditingController(), name=TextEditingController(), opening=TextEditingController(); String type='asset';
+  @override void initState(){ super.initState(); _load(); }
+  Future<void> _load() async { final db=await DB.db; accounts = await db.query('chart_of_accounts', orderBy:'code ASC'); setState((){}); }
+  Future<void> _add() async { if(code.text.trim().isEmpty||name.text.trim().isEmpty) return; final db=await DB.db; await db.insert('chart_of_accounts', {'code':code.text,'name':name.text,'type':type,'opening_balance':double.tryParse(opening.text)??0}); code.clear(); name.clear(); opening.clear(); _load(); }
+  Future<void> _delete(int id) async { final db=await DB.db; final used = await db.rawQuery('SELECT COUNT(*) as cnt FROM journal_lines WHERE account_id=?', [id]); final cnt = (used.first['cnt'] as int? ) ?? 0; if(cnt>0){ ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('لا يمكن حذف حساب مرتبط بحركات'))); return; } await db.delete('chart_of_accounts', where:'id=?', whereArgs:[id]); _load(); }
+  @override Widget build(BuildContext c){ return Scaffold(appBar: AppBar(title: const Text('الدليل المحاسبي')), body: Column(children:[ Padding(padding: const EdgeInsets.all(8), child: Column(children:[ TextField(controller: code, decoration: const InputDecoration(labelText:'الكود')), TextField(controller: name, decoration: const InputDecoration(labelText:'الاسم')), DropdownButtonFormField<String>(value:type, items: const [ DropdownMenuItem(value:'asset', child: Text('أصل')), DropdownMenuItem(value:'liability', child: Text('خصم')), DropdownMenuItem(value:'equity', child: Text('رأس مال')), DropdownMenuItem(value:'revenue', child: Text('إيراد')), DropdownMenuItem(value:'expense', child: Text('مصروف')), ], onChanged:(v)=> setState(()=> type=v ?? 'asset')), TextField(controller: opening, decoration: const InputDecoration(labelText:'الرصيد الافتتاحي'), keyboardType: TextInputType.number), ElevatedButton(onPressed:_add, child: const Text('إضافة')) ])), Expanded(child: ListView.builder(itemCount:accounts.length,itemBuilder:(_,i){ final a=accounts[i]; return ListTile(title: Text('${a['code']} - ${a['name']}'), subtitle: Text('نوع: ${a['type']} | افتتاحي: ${a['opening_balance']}'), trailing: IconButton(icon: const Icon(Icons.delete), onPressed: ()=> _delete(a['id']))); })) ])); }
+}

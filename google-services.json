@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "869981154409",
+    "project_id": "roeahshop-8dfe9",
+    "storage_bucket": "roeahshop-8dfe9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:869981154409:android:8fe1497df53faa04dec6f8",
+        "android_client_info": {
+          "package_name": "Com.roeahcacc.com"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKLLPixUHIUW4D6ZgLwwSH6sgE95RotPY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
