@@ -1,25 +1,29 @@
-
 import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
-import 'config/app_routes.dart';
-import 'config/app_theme.dart';
-import 'services/db_service.dart';
+import 'screens/dashboard_screen.dart';
+import 'screens/product_screen.dart';
+import 'screens/invoice_screen.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await DBService.init();
-  runApp(const MyApp());
+void main() {
+  runApp(PerfumeERPApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class PerfumeERPApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'نظام المحاسبة والمخزون',
-      theme: buildTheme(),
-      initialRoute: AppRoutes.login,
-      routes: AppRoutes.routes,
+      title: 'Perfume ERP',
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+        fontFamily: 'Cairo',
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LoginScreen(),
+        '/dashboard': (context) => DashboardScreen(),
+        '/products': (context) => ProductScreen(),
+        '/invoices': (context) => InvoiceScreen(),
+      },
       debugShowCheckedModeBanner: false,
     );
   }
